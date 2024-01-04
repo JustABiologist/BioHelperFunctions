@@ -3,6 +3,7 @@ import os
 import numpy as np
 import csv
 from concurrent.futures import ProcessPoolExecutor
+import argparse
 
 def calculate_angles(residue):
     """Calculate phi, psi, and chi angles for a given residue."""
@@ -41,25 +42,28 @@ def process_single_pdb(filename):
 
     return data
 
-def process_pdb_files(directory):
-    pdb_files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".pdb")]
+def process_pdb_files(input_directory, output_file, cores):
+    pdb_files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.endswith(".pdb")]
     all_data = []
 
-    with ProcessPoolExecutor(max_workers=16) as executor:
+    with ProcessPoolExecutor(max_workers=cores) as executor:
         results = executor.map(process_single_pdb, pdb_files)
 
         for result in results:
             all_data.extend(result)
 
     # Write data to CSV
-    with open('cysteine_rotamers.csv', 'w', newline='') as file:
+    with open(output_file, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Filename', 'Phi', 'Psi', 'Chi1', 'Chi2', 'Chi3', 'Chi4'])
         for data in all_data:
             writer.writerows(data)
 
-# Directory containing PDB files
-pdb_directory = '/path/to/your/pdb/files'
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process PDB files and generate a cysteine rotamer CSV.")
+    parser.add_argument('-i', '--input', required=True, help="Input directory containing PDB files")
+    parser.add_argument('-o', '--output', required=True, help="Output CSV file path")
+    parser.add_argument('-c', '--cores', type=int, default=4, help="Number of cores to use (default: 4)")
 
-# Process the PDB files and output to CSV
-process_pdb_files(pdb_directory)
+    args = parser.parse_args()
+    process_pdb_files(args.input, args.output, args.cores)
