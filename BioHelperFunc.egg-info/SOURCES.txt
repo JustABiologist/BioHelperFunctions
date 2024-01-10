@@ -1,0 +1,7 @@
+README.md
+setup.py
+BioHelperFunc.egg-info/PKG-INFO
+BioHelperFunc.egg-info/SOURCES.txt
+BioHelperFunc.egg-info/dependency_links.txt
+BioHelperFunc.egg-info/requires.txt
+BioHelperFunc.egg-info/top_level.txt
