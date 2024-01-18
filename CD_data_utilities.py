@@ -1,7 +1,8 @@
 import pandas as pd 
 import numpy as np
-import csv
 import re
+import os
+from pathlib import Path
 
 def parse_file_v4(filepath, keytuple: tuple):
     """Takes a path to a .pcd file. Will output a dataframe for the Data in it. Additionally, it will output
@@ -42,12 +43,27 @@ def parse_file_v4(filepath, keytuple: tuple):
 
     return meta_dict, data_df
 
+def do_for_directory(dirname, keytuple):
+    l_data = []
+    dir_path = Path(dirname)
+    for path in os.listdir(dirname):
+        joined = str(dir_path.joinpath(path))
+        l_data.append(parse_file_v4(joined, keytuple))
+    return l_data
+
+def split_data_pdb(l_data):
+    pdb_id = [entry for entry in l_data if entry[0]["PDB ID"] != "No data provided"]
+    non_pdb = list(set(l_data) - set(pdb_id))
+    return pdb_id, non_pdb
+
+
+
 
 
 
 def main():
     # Test the function with a file path and keytuple
-    keytuple = ("Experimental Temperature (C)", "PCDDBID")
+    keytuple = ("Experimental Temperature (C)", "PCDDBID", "PDB ID")
     metadata_v4, data_df_v4 = parse_file_v4("/Users/floriangrun/Desktop/Bachelorarbeit_Koch/CD_sim/cd_bsp.pcd", keytuple)
     print(metadata_v4)
     print(data_df_v4.head())
