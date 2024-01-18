@@ -39,7 +39,6 @@ def process_single_pdb(filename):
                 if residue.get_resname() == 'CYS':
                     angles = calculate_angles(residue)
                     data.append([os.path.basename(filename), *angles])
-
     return data
 
 def process_pdb_files(input_directory, output_file, cores):
@@ -55,7 +54,7 @@ def process_pdb_files(input_directory, output_file, cores):
     # Write data to CSV
     with open(output_file, 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Filename', 'Phi', 'Psi', 'Chi1', 'Chi2', 'Chi3', 'Chi4'])
+        writer.writerow(['Filename', 'Phi', 'Psi', 'Chi1'])
         for data in all_data:
             writer.writerows(data)
 
