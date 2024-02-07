@@ -2,6 +2,7 @@ import numpy as np
 from Bio import SeqIO, pairwise2
 import matplotlib.pyplot as plt
 import mplcursors
+import pickle
 
 def find_cysteines(sequence):
     return [i for i, amino_acid in enumerate(sequence) if amino_acid == 'C']
@@ -106,11 +107,15 @@ def score_and_compare_sequences(distances_dict):
     return results
 
 # Example usage
-fasta_file = "/Users/floriangrun/Downloads/uniprotkb_RxLR_effector_protein_AND_rev_2024_02_02.fasta"  # Replace with your FASTA file path
+fasta_file = "/Users/floriangrun/Downloads/uniparc_taxonomy_id_5455_AND_protein_2024_02_02.fasta"  # Replace with your FASTA file path
+export_data = "/Users/floriangrun/Desktop/data_cysteine_dmaps.pkl"
 distances = process_fasta(fasta_file)
-results = score_and_compare_sequences(distances)
+#results = score_and_compare_sequences(distances)
 
-plot_cysteine_vs_identity(results)
+#plot_cysteine_vs_identity(results)
+with open(export_data, "wb") as path:
+    pickle.dump(distances, path)
 
-for i,j in results.items():
-    print(f"Pair: {i}, Cysteine Score: {j[0]}, Sequence Identity: {j[1]:.2f}%")
+#for i,j in results.items():
+#    print(f"Pair: {i}, Cysteine Score: {j[0]}, Sequence Identity: {j[1]:.2f}%")
+
